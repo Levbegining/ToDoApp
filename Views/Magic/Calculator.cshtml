@@ -1,35 +1,5 @@
 ﻿<p id="Result"></p>
 
-@* <div>
-    Посчитать сумму чисел
-    <input type="text" id="1">
-    <input type="text" id="2">
-    <button onclick="sum()">Посчитать сумму</button>
-
-</div>
-
-<div>
-    Посчитать разность чисел
-    <input type="text" id="3">
-    <input type="text" id="4">
-    <button onclick="minus()">Посчитать разность</button>
-
-</div>
-
-<div>
-    Посчитать произведение чисел
-    <input type="text" id="5">
-    <input type="text" id="6">
-    <button onclick="multiply()">Посчитать произведение</button>
-
-</div>
-
-<div>
-    Посчитать частное чисел
-    <input type="text" id="7">
-    <input type="text" id="8">
-    <button onclick="substract()">Посчитать частное</button>
-</div> *@
 
 </div>
     <input type="text" id="-1">
@@ -56,49 +26,4 @@
         then(r => r.text()).
         then(ans => resultP.innerHTML = `result: ${ans}`);
     }
-
-
-    @* function sum(){
-        let a = document.getElementById("1");
-        let b = document.getElementById("2");
-        let resultP = document.getElementById("Result");
-
-        fetch(`/Magic/Sum?a=${a.value}&b=${b.value}`).
-        then(response => response.text()).
-        @* then(data => {
-            alert("ответ от сервера: " + data);
-        }) 
-        then(ans => { resultP.innerHTML = `Результат сложения: ${ans}`; });
-        //resultP.innerHTML = ans;
-    }
-    function minus()
-    {
-        let a = document.getElementById("3");
-        let b = document.getElementById("4");
-        let resultP = document.getElementById("Result");
-
-        fetch(`/Magic/Minus?a=${a.value}&b=${b.value}`).
-        then(response => response.text()).
-        then(ans => resultP.innerHTML = `Результат вычитания: ${ans}`)
-    }
-    function multiply()
-    {
-        let a = document.getElementById("5");
-        let b = document.getElementById("6");
-        let resultP = document.getElementById("Result");
-
-        fetch(`/Magic/Multiply?a=${a.value}&b=${b.value}`).
-        then(response => response.text()).
-        then(ans => resultP.innerHTML = `Результат произведения: ${ans}`)
-    }
-    function substract()
-    {
-        let a = document.getElementById("7");
-        let b = document.getElementById("8");
-        let resultP = document.getElementById("Result");
-
-        fetch(`/Magic/Substract?a=${a.value}&b=${b.value}`).
-        then(response => response.text()).
-        then(ans => resultP.innerHTML = `Результат частного: ${ans}`)
-    } *@
 </script>
