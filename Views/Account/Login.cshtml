@@ -1,0 +1,27 @@
+﻿@model ToDoApp.Models.ViewModels.LoginViewModel
+
+<h1>Login</h1>
+
+@if(ViewData.ModelState.IsValid == false){
+    foreach(var error in ViewData.ModelState.Values.SelectMany(x => x.Errors)){
+        <p>@error.ErrorMessage</p>
+    }
+}
+
+<form asp-action="Login" method="post">
+    <div>
+        <input asp-for=Email placeholder="email">
+    </div>
+    <div>
+        <input asp-for=Password placeholder="password">
+    </div>
+    <div>
+        <input asp-for=RememberMe>
+        <label>RememberMe</label>
+    </div>
+
+<div class="g-recaptcha" data-sitekey="6LcTf6IqAAAAAGkGZZvDp0c-5dRV7yiLVdLUsCkc"></div>
+
+    <input type="submit" value="Login">
+</form>
+<script src="https://www.google.com/recaptcha/api.js"

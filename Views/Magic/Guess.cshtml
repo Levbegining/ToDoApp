@@ -1,0 +1,24 @@
+﻿<p id="txt"></p>
+<div>
+    <input type="text" id="num">
+    <button onclick="generateNum()">Сгенерировать число</button>
+    <button onclick="guess()">Угадать</button>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', function(){
+        fetch('/Magic/GenerateNum')
+    })
+    function generateNum() {
+        fetch('/Magic/GenerateNum')
+
+    }
+    function guess() {
+        const num = document.getElementById('num');
+        const text = document.getElementById('txt');
+
+        fetch(`/Magic/CheckGuess?num=${num.value}`).
+        then(response=> response.text()).
+        then(ans => text.innerHTML = ans);
+    }
+</script>

@@ -1,0 +1,31 @@
+﻿@model ToDoApp.Models.ViewModels.RegisterViewModel
+
+@*
+ReCaptcha:
+Site: 6LcTf6IqAAAAAGkGZZvDp0c-5dRV7yiLVdLUsCkc
+Key(secret): 6LcTf6IqAAAAAE-aaz4ZuIWE0RmW83x6QbfMSgeY
+*@
+<h1>Register</h1>
+
+@if(ViewData.ModelState.IsValid == false){
+    foreach(var error in ViewData.ModelState.Values.SelectMany(x => x.Errors)){
+        <p>@error.ErrorMessage</p>
+    }
+}
+
+<form asp-action="Register" method="post">
+    <input asp-for="Email">
+    <input asp-for="Password">
+    <input asp-for="ConfirmPassword">
+    @* <input asp-for="SiteKey" value="@Model.SiteKey" hidden> *@
+
+    @* fix2: сделать так, чтобы sitekey автоматически подргужался *@
+
+    <div class="g-recaptcha" data-sitekey="@ViewBag.SiteKey"></div>
+
+    @* <div class="g-recaptcha" data-sitekey="@Model.SiteKey"></div> *@
+    @* <div class="g-recaptcha" data-sitekey="6LcTf6IqAAAAAGkGZZvDp0c-5dRV7yiLVdLUsCkc"></div> *@
+
+    <input type="submit" value="Register">
+</form>
+<script src="https://www.google.com/recaptcha/api.js"

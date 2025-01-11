@@ -1,0 +1,5 @@
+﻿@model string
+@if(Model != null){
+    <p>Добро пожаловать, @Model</p>
+    @User.Identity.Name
+}

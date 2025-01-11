@@ -1,0 +1,92 @@
+﻿<h1>Tasks</h1>
+
+<input type="text" id="taskInput" placeholder="введите задачу">
+<button id="addTaskBtn">добавить задачу</button>
+
+<ul id="tasksList"></ul>
+
+<script>
+    //# DOM - html-элемент; срабатывает добавить загрузки
+    //# ресурсов (картинки, стили)
+    document.addEventListener('DOMContentLoaded', function () {
+        const taskInput = document.getElementById('taskInput');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const tasksList = document.getElementById('tasksList');
+
+        loadTasks();
+
+        addTaskBtn.addEventListener('click', function () {
+            const text = taskInput.value;
+            if (!text) {
+                alert('введите текст задачи!')
+                return;
+            }
+            console.log(text);
+
+    @* // отправить POST запрос
+            fetch('/Tasks/AddTask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'taskText=' + encodeURIComponent(text) // экранирование символов(закодировать)
+            }).
+            then(response => response.json()).
+            then(data => renderTasks(data.tasks));
+             *@
+                fetch('/Tasks/AddTask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'text=' + encodeURIComponent(text) // экранирование символов 
+                }).then(response => response.json()).
+                    then(data => renderTasks(data.tasks));
+
+        })
+
+        // Функция загрузки задач
+        function loadTasks() {
+            fetch('/Tasks/GetTasks').
+                then(response => response.json()).
+                then(data => renderTasks(data.tasks));
+        }
+
+        // отрисовка списка задач
+        function renderTasks(tasksArray) {
+            tasksList.innerHTML = ''; // clear url
+            let counter = 0;
+            for (let t of tasksArray) {
+                const li = document.createElement('li');
+                li.textContent = t;
+                //li.id = counter;
+                //counter++;
+                //li.tagName = t.id;
+
+
+                // создание кнопки
+                const button = document.createElement('button');
+                button.textContent = 'удалить';
+
+                tasksList.appendChild(li);
+                tasksList.appendChild(button);
+
+                //button.id = counter * (-1);
+                //button.tagName = t.id;
+                button.addEventListener('click', function () {
+                        @* button.remove();
+                        li.remove(); *@
+                        fetch(`/Tasks/RemoveTask?txtOfTask=${li.textContent}`)
+                        tasksList.removeChild(li);
+                    tasksList.removeChild(button);
+                });
+            }
+        }
+    @* function deleteTaskById(id){
+            const arr = document.getElementsByTagName(id);
+            for(let el of arr){
+            el.remove();
+            }
+        } *@
+    })
+</script>
