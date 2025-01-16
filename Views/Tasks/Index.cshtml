@@ -108,8 +108,8 @@
         }
 
         function handleDragDrop(e) {
-            let curId = Number(e.currentTarget.id);
-            let draggedId = draggedItem.id;
+            @* let curId = Number(e.currentTarget.id);
+            let draggedId = draggedItem.id; *@
 
             console.log('бросаем элемент');
             e.stopPropagation(); // остановка всплытия()
@@ -125,9 +125,9 @@
                 }
                 else {
                     tasksList.insertBefore(draggedItem, e.currentTarget.nextSibling);
-                    curId +=1;
+                    @* curId +=1; *@
                 }
-                const id = encodeURIComponent(draggedId);
+                @* const id = encodeURIComponent(draggedId);
                 const idTwo = encodeURIComponent(curId);
 
                 console.log(`curId: ${curId}, dragged item id: ${draggedId}`);
@@ -138,7 +138,7 @@
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
                         body: 'id=' + id + '&idTwo=' + idTwo
-                    });
+                    }); *@
             }
 
         }
@@ -154,7 +154,7 @@
                 div.style.margin = '5px 0'; // Устанавливаем отступы между задачами
                 div.style.maxWidth = '250';
                 div.setAttribute('draggable', 'true');
-                div.id = i;
+                @* div.id = i; *@
 
                 const li = document.createElement('li');
                 li.textContent = tasksArray[i];
