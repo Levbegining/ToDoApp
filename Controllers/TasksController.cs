@@ -31,10 +31,8 @@ public class TasksController : Controller
         TaskRepository.Tasks.RemoveAt(id);
         return Content("");
     }
-    public IActionResult Replace(int id, int idTwo){
-        // var a = TaskRepository.Tasks[id];
-        // TaskRepository.Tasks[id] = TaskRepository.Tasks[idTwo];
-        // TaskRepository.Tasks[idTwo] = a;
+    public IActionResult Replace(int id, int idTwo)
+    {
         string el = TaskRepository.Tasks[id];
         TaskRepository.Tasks.RemoveAt(id);
 
