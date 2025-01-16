@@ -1,0 +1,140 @@
+<html>
+    <head>
+        <style>
+            ul{
+                list-style: none;
+                width: 300px;
+                padding: 0;
+            }
+
+            li {
+                border: 1px solid black;
+                margin: 10px 0;
+                cursor: move;
+                padding: 8px;
+            }
+
+            /* Визуальная подсветка */
+            .drag-over-top {
+                border-top: 3px solid blue;
+            }
+            .drag-over-bottom {
+                border-bottom: 3px solid blue;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Drag and Drop</h1>
+        <ul id="draggable-list">
+            <li draggable="true">element 1</li>
+            <li draggable="true">element 2</li>
+            <li draggable="true">element 3</li>
+            <li draggable="true">element 4</li>
+            <li draggable="true">element 5</li>
+        </ul>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function(){
+                const list = document.getElementById('draggable-list');
+
+                let draggedItem = null; // какой элемент сейчас перетаскивают
+                let dragOverItem = null; // над каким элементом мы сейчас зависли
+                let isAboveHalf = null; // над верхней или нижней половиной мы находимся
+
+                // обработчик. Начало захвата эелемента
+                function handleDragStart(e){
+                    console.log('Начало захвата элемента');
+
+                    draggedItem = this;
+                }
+
+                // обработчик. Когда перетаскиваемый элемент вошел в пределы другого
+                function handleDragEnter(e){
+                    console.log('Вошел в пределы другого');
+
+                    // запомнить, над каким элементом находимся
+                    dragOverItem = this;
+                }
+
+                // обработчик. Когда двигаем курсор над элементом
+                function handleDragOver(e){
+                    console.log('Двигаем курсор над элементом');
+
+                    // разрешить сброс(drop)
+                    e.preventDefault();
+
+                    // в какую половину li мы нацелились
+                    const bounding = this.getBoundingClientRect(); // создает rect по левому верхнему углу
+
+                    console.log('[Bounding]', bounding.x, bounding.y, bounding.width, bounding.height);
+
+                    // вертикальная середина элемента
+                    const middleY = bounding.y + bounding.height / 2;
+
+                    //console.log(`[HandleDragOver] ${middleY}`);
+
+                    if(e.clientY < middleY)
+                    {
+                        // наводимся на верхнюю часть
+                        this.classList.add('drag-over-top');
+                        this.classList.remove('drag-over-bottom');
+                        isAboveHalf = true;
+                    }
+                    else{
+                        // наводим на нижнюю часть элемента
+                        this.classList.add('drag-over-bottom');
+                        this.classList.remove('drag-over-top');
+                        isAboveHalf = false;
+                    }
+                }
+
+                // обработчик. Когда курсор уходит с элемента
+                function handleDragLeave(e){
+                    console.log('Курсор уходит с элемента');
+                    this.classList.remove('drag-over-top');
+                    this.classList.remove('drag-over-bottom');
+                }
+
+                // обработчик. Когда бросаем элемент
+                function handleDragDrop(e){
+                    console.log('Бросаем элемент');
+
+                    // остановка всплытия - клиент не получит drop
+                    e.stopPropagation();
+                    // сами обрабатываем действия - никаких операций от браузера не нужно
+                    e.preventDefault();
+
+                    this.classList.remove('drag-over-top', 'drag-over-bottom');
+                    // this - на что роняем()
+                    if(draggedItem !== this){
+                        // если действительно перетаскиваем другой элемент
+                        if(isAboveHalf){
+                            // внедряем элемент перед this
+                            list.insertBefore(draggedItem, this);
+                        }
+                        else{
+                            // вставляем элемент после this
+                            // nextSibling - следующий сосед(перед nextSibling)
+                            list.insertBefore(draggedItem, this.nextSibling); 
+                        }
+                    }
+                }
+
+                // main
+                // получаем все li элементы
+                const items = list.querySelectorAll('li');
+
+                items.forEach(function(item) {
+                    item.addEventListener('dragstart', handleDragStart, false);
+                    item.addEventListener('dragenter', handleDragEnter, false);
+                    item.addEventListener('dragover', handleDragOver, false);
+                    item.addEventListener('dragleave', handleDragLeave, false);
+                    item.addEventListener('drop', handleDragDrop, false);
+                });
+
+                // false -> фаза всплытия(bubbling, изнутри наружу)
+                // true -> фаза захвата(capturing, снаружи внутрь)
+            });
+        </script>
+    </body>
+</html>

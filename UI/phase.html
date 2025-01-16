@@ -1,0 +1,24 @@
+<html>
+<body>
+
+    <div id="parent">
+        Parent
+        <button id="child">Child</button>
+    </div>
+
+
+    <script>
+        const parent = document.getElementById('parent');
+        const child = document.getElementById('child');
+
+        function handleParentClick(e){
+            console.log('parent click');
+        }
+        function handleChildClick(e){
+            console.log('child clcik');
+        }
+        parent.addEventListener('click', handleParentClick, false);
+        child.addEventListener('click', handleChildClick, false);
+    </script>
+</body>
+</html>

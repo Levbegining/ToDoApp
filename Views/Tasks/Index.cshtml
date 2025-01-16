@@ -1,17 +1,45 @@
 ﻿<h1>Tasks</h1>
 
+<style>
+    ul {
+        list-style: none;
+    }
+
+    ul div{
+        border: 1px solid black;
+    }
+    .drag-over-top {
+        
+        border: 1px solid black;
+        border-top: 4px solid blue;
+    }
+
+    .drag-over-bottom {
+        border: 1px solid black;
+        border-bottom: 4px solid blue;
+    }
+    ._div {
+        @* border: 1px solid black; *@
+        cursor: move;
+    }
+</style>
+
 <input type="text" id="taskInput" placeholder="введите задачу">
 <button id="addTaskBtn">добавить задачу</button>
 
 <ul id="tasksList"></ul>
 
 <script>
+    let draggedItem = null;
+    let isAboveHalf = null;
     //# DOM - html-элемент; срабатывает добавить загрузки
     //# ресурсов (картинки, стили)
     document.addEventListener('DOMContentLoaded', function () {
         const taskInput = document.getElementById('taskInput');
         const addTaskBtn = document.getElementById('addTaskBtn');
         const tasksList = document.getElementById('tasksList');
+
+
 
         loadTasks();
 
@@ -23,25 +51,15 @@
             }
             console.log(text);
 
-    @* // отправить POST запрос
+            //# отправить Post-запрос
             fetch('/Tasks/AddTask', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: 'taskText=' + encodeURIComponent(text) // экранирование символов(закодировать)
-            }).
-            then(response => response.json()).
-            then(data => renderTasks(data.tasks));
-             *@
-                fetch('/Tasks/AddTask', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'text=' + encodeURIComponent(text) // экранирование символов 
-                }).then(response => response.json()).
-                    then(data => renderTasks(data.tasks));
+                body: 'text=' + encodeURIComponent(text) // экранирование символов 
+            }).then(response => response.json()).
+                then(data => renderTasks(data.tasks));
 
         })
 
@@ -52,41 +70,121 @@
                 then(data => renderTasks(data.tasks));
         }
 
+        //# region Перетаскивание элементов
+
+
+        
+
+        // вошел в пределы другого
+        function handleDragEnter(e) {
+            console.log('вошел в пределы элемента');
+    @* draggedItem = this; *@
+            }
+
+        function handleDragOver(e) {
+            console.log('находимся над элементом(двигаем курсор над элементом)');
+
+            e.preventDefault(e);
+
+            const rect = this.getBoundingClientRect();
+            const middleY = rect.y + rect.height / 2;
+
+            if (e.clientY < middleY) {
+                this.classList.add('drag-over-top');
+                this.classList.remove('drag-over-bottom');
+                isAboveHalf = true;
+            }
+            else {
+                this.classList.add('drag-over-bottom');
+                this.classList.remove('drag-over-top');
+                isAboveHalf = false;
+            }
+        }
+
+        function handleDragLeave(e) {
+            console.log('курсор уходит с элемента');
+            this.classList.remove('drag-over-bottom');
+            this.classList.remove('drag-over-top');
+        }
+
+        function handleDragDrop(e) {
+            let curId = Number(e.currentTarget.id);
+            let draggedId = draggedItem.id;
+
+            console.log('бросаем элемент');
+            e.stopPropagation(); // остановка всплытия()
+            e.preventDefault(); // сами обрабатываем действия - никаких операций от браузера не нужно
+
+            this.classList.remove('drag-over-bottom', 'drag-over-top');
+            
+            if (draggedItem !== this) {
+                if (isAboveHalf) {
+                    tasksList.insertBefore(draggedItem, e.currentTarget);
+                    
+                    @* curId = curId - 1; *@
+                }
+                else {
+                    tasksList.insertBefore(draggedItem, e.currentTarget.nextSibling);
+                    curId +=1;
+                }
+                const id = encodeURIComponent(draggedId);
+                const idTwo = encodeURIComponent(curId);
+
+                console.log(`curId: ${curId}, dragged item id: ${draggedId}`);
+
+                fetch('/Tasks/Replace', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'id=' + id + '&idTwo=' + idTwo
+                    });
+            }
+
+        }
+
         // отрисовка списка задач
         function renderTasks(tasksArray) {
             tasksList.innerHTML = ''; // clear url
             let counter = 0;
-            for (let t of tasksArray) {
-                const li = document.createElement('li');
-                li.textContent = t;
-                //li.id = counter;
-                //counter++;
-                //li.tagName = t.id;
+            for (let i = 0; i < tasksArray.length; i++) {
+                const div = document.createElement('div');
+                div.classList.add('_div') // Устанавливаем границы
+                div.style.padding = '8px'; // Устанавливаем внутренние отступы
+                div.style.margin = '5px 0'; // Устанавливаем отступы между задачами
+                div.style.maxWidth = '250';
+                div.setAttribute('draggable', 'true');
+                div.id = i;
 
+                const li = document.createElement('li');
+                li.textContent = tasksArray[i];
 
                 // создание кнопки
                 const button = document.createElement('button');
                 button.textContent = 'удалить';
 
-                tasksList.appendChild(li);
-                tasksList.appendChild(button);
+                div.appendChild(li);
+                div.appendChild(button);
+                tasksList.appendChild(div);
 
-                //button.id = counter * (-1);
-                //button.tagName = t.id;
                 button.addEventListener('click', function () {
-                        @* button.remove();
-                        li.remove(); *@
-                        fetch(`/Tasks/RemoveTask?txtOfTask=${li.textContent}`)
-                        tasksList.removeChild(li);
-                    tasksList.removeChild(button);
+                    fetch(`/Tasks/RemoveTask?id=${i}`);
+                    tasksList.removeChild(div);
                 });
             }
+            let arr = tasksList.querySelectorAll('div');
+            arr.forEach(function (item) {
+                item.addEventListener('dragstart', handleDragStart, false);
+                item.addEventListener('dragenter', handleDragEnter, false);
+                item.addEventListener('dragover', handleDragOver, false);
+                item.addEventListener('dragleave', handleDragLeave, false);
+                item.addEventListener('drop', handleDragDrop, false);
+            });
+
         }
-    @* function deleteTaskById(id){
-            const arr = document.getElementsByTagName(id);
-            for(let el of arr){
-            el.remove();
-            }
-        } *@
-    })
+        function handleDragStart(e) {
+            console.log('схватил элемент');
+            draggedItem = e.currentTarget;
+        }
+    });
 </script>

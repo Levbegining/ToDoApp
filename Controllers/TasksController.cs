@@ -23,11 +23,22 @@ public class TasksController : Controller
     public IActionResult AddTask(string text)
     {
         TaskRepository.Tasks.Add(text);
-        var res = Json(new {tasks = TaskRepository.Tasks});
+        var res = Json(new { tasks = TaskRepository.Tasks });
         return res;
     }
-    public IActionResult RemoveTask(string txtOfTask){
-        TaskRepository.Tasks.Remove(txtOfTask);
+    public IActionResult RemoveTask(int id)
+    {
+        TaskRepository.Tasks.RemoveAt(id);
+        return Content("");
+    }
+    public IActionResult Replace(int id, int idTwo){
+        // var a = TaskRepository.Tasks[id];
+        // TaskRepository.Tasks[id] = TaskRepository.Tasks[idTwo];
+        // TaskRepository.Tasks[idTwo] = a;
+        string el = TaskRepository.Tasks[id];
+        TaskRepository.Tasks.RemoveAt(id);
+
+        TaskRepository.Tasks.Insert(idTwo, el);
         return Content("");
     }
 }

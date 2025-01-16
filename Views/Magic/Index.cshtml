@@ -78,7 +78,7 @@
 
     function toggleSecret(){
         let secretBox = document.getElementById('secretBox');
-        if(secretBox.style.display === "none"){ // строгая проверка
+        if(secretBox.style.display === "none"){ // строгая проверка(parse происходит автоматически)
             secretBox.style.display = 'block';
         } else {
             secretBox.style.display = 'none';
