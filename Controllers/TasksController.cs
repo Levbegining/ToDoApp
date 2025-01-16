@@ -31,16 +31,6 @@ public class TasksController : Controller
         TaskRepository.Tasks.RemoveAt(id);
         return Content("");
     }
-    // public IActionResult Replace(int id, int idTwo){
-    //     // var a = TaskRepository.Tasks[id];
-    //     // TaskRepository.Tasks[id] = TaskRepository.Tasks[idTwo];
-    //     // TaskRepository.Tasks[idTwo] = a;
-    //     string el = TaskRepository.Tasks[id];
-    //     TaskRepository.Tasks.RemoveAt(id);
-
-    //     TaskRepository.Tasks.Insert(idTwo, el);
-    //     return Content("");
-    // }
 }
 
 public static class TaskRepository

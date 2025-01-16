@@ -120,25 +120,10 @@
             if (draggedItem !== this) {
                 if (isAboveHalf) {
                     tasksList.insertBefore(draggedItem, e.currentTarget);
-                    
-                    @* curId = curId - 1; *@
                 }
                 else {
                     tasksList.insertBefore(draggedItem, e.currentTarget.nextSibling);
-                    @* curId +=1; *@
                 }
-                @* const id = encodeURIComponent(draggedId);
-                const idTwo = encodeURIComponent(curId);
-
-                console.log(`curId: ${curId}, dragged item id: ${draggedId}`);
-
-                fetch('/Tasks/Replace', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: 'id=' + id + '&idTwo=' + idTwo
-                    }); *@
             }
 
         }
@@ -154,7 +139,6 @@
                 div.style.margin = '5px 0'; // Устанавливаем отступы между задачами
                 div.style.maxWidth = '250';
                 div.setAttribute('draggable', 'true');
-                @* div.id = i; *@
 
                 const li = document.createElement('li');
                 li.textContent = tasksArray[i];
